@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+
+  "name": "Timebox Notification",
+  "description": "Essa extensão notifica o usuário quando for a hora de bater seu ponto.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://webservices.cinq.com.br/pessoas/timebox"
+      ],
+      "js": [
+        "notification-timebox.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+
+  "permissions": [
+    "activeTab",
+    "https://webservices.cinq.com.br/pessoas/timebox"
+  ]
+}
