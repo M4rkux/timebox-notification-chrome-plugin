@@ -46,7 +46,7 @@ setInterval(function () {
 function verirficaHora(prevista, atual, notificou, notificacao) {
     if (prevista === atual && !notificou.jaNotificou) {
         if (!("Notification" in window)) {
-          alert("This browser does not support desktop notification");
+          alert("Este browser não suporta notificações");
         }
         mostraNotificacao(notificacao);
         notificou.jaNotificou = true;

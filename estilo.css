@@ -1,0 +1,18 @@
+.warn {
+    background-color: #343a40;
+    color: #fff;
+    padding: 0.25rem;
+    display: block;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+
+a:hover {
+    color: #0062cc;
+    text-decoration: underline;
+}
