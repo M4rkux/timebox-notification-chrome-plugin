@@ -1,11 +1,11 @@
-var notificouSaida = { jaNotificou: document.querySelector("#HoraSaida") ? true : false };
-var notificouAlmoco = { jaNotificou: document.querySelector("#hdfHoraEntradaAlmoco") ? true : false };
-var audio = new Audio('https://freesound.org/data/previews/109/109662_945474-lq.mp3');
-var icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
+let notificouSaida = { jaNotificou: document.querySelector("#HoraSaida") ? true : false };
+let notificouAlmoco = { jaNotificou: document.querySelector("#hdfHoraEntradaAlmoco") ? true : false };
+let audio = new Audio('https://freesound.org/data/previews/109/109662_945474-lq.mp3');
+let icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
 setInterval(function () {
-    var atual = document.querySelector("#relogio").innerHTML.split(':')[0] + ':' + document.querySelector("#relogio").innerHTML.split(':')[1];
-    var saida = document.querySelector("#HoraPrevistaSaida").value ? document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[0] + ':' + document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1] : '';
-    var almoco = '';
+    let atual = document.querySelector("#relogio").innerHTML.split(':')[0] + ':' + document.querySelector("#relogio").innerHTML.split(':')[1];
+    let saida = document.querySelector("#HoraPrevistaSaida").value ? document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[0] + ':' + document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1] : '';
+    let almoco = '';
 
     if (Notification.permission !== 'denied' && Notification.permission !== 'granted') {
       Notification.requestPermission(function (permission) {
@@ -21,7 +21,7 @@ setInterval(function () {
     }
 
     if (document.querySelector("#hdfHoraSaidaAlmoco").value) {
-      var almocoHora = parseInt(document.querySelector("#hdfHoraSaidaAlmoco").value.split(':')[0]);
+      let almocoHora = parseInt(document.querySelector("#hdfHoraSaidaAlmoco").value.split(':')[0]);
       almocoHora++;
       almoco = almocoHora.toString() + ':' + document.querySelector("#hdfHoraSaidaAlmoco").value.split(':')[1];
     }
@@ -55,7 +55,7 @@ function verirficaHora(prevista, atual, notificou, notificacao) {
 
 function mostraNotificacao(notificacao) {
     if (Notification.permission === "granted") {
-        var notification = new Notification(notificacao.titulo, notificacao.corpo);
+        let notification = new Notification(notificacao.titulo, notificacao.corpo);
         audio.play();
     }
 }
