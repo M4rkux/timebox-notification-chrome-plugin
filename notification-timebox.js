@@ -1,9 +1,10 @@
 let notificouSaida = { jaNotificou: document.querySelector("#HoraSaida") ? true : false };
 let notificouAlmoco = { jaNotificou: document.querySelector("#hdfHoraEntradaAlmoco") ? true : false };
-let audio = new Audio('https://freesound.org/data/previews/109/109662_945474-lq.mp3');
-let icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
+const audio = new Audio('https://freesound.org/data/previews/109/109662_945474-lq.mp3');
+const icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
 setInterval(function () {
-    let atual = document.querySelector("#relogio").innerHTML.split(':')[0] + ':' + document.querySelector("#relogio").innerHTML.split(':')[1];
+    let newDate = new Date();
+	let atual = hora.getHours() + ':' + hora.getMinutes();
     let saida = document.querySelector("#HoraPrevistaSaida").value ? document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[0] + ':' + document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1] : '';
     let almoco = '';
 
