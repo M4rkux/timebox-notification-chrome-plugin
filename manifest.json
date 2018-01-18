@@ -25,6 +25,7 @@
   "permissions": [
     "activeTab",
     "https://webservices.cinq.com.br/pessoas/timebox",
-    "storage"
+    "storage",
+    "notifications"
   ]
 }

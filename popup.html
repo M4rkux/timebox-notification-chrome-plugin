@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <link href="/estilo.css" rel="stylesheet"/>
 </head>
-<body>
+<body id="body">
     <small class="warn">Mantenha essa página aberta para ser notificado</small>
     <a href="https://webservices.cinq.com.br/pessoas/timebox" target="_blank">
         https://webservices.cinq.com.br/pessoas/timebox
@@ -11,12 +11,14 @@
     
     <div class="row press">
         <label for="twominutes">Aviso de 2 minutos</label>
-        <input type="checkbox" name="twominutes" id="twominutes" class="cbx hidden" checked />
+        <input type="checkbox" name="twominutes" id="twominutes" class="cbx hidden" />
         <label for="twominutes" class="lbl"></label> 
     </div>
     <div class="row press">
         <label for="audioPermission">Áudio</label>
-        <input type="checkbox" name="audioPermission" id="audioPermission" class="cbx hidden" checked />
+        <input type="checkbox" name="audioPermission" id="audioPermission" class="cbx hidden" />
         <label for="audioPermission" class="lbl"></label> 
     </div>
+
+    <script src="popup.js"></script>
 </body>

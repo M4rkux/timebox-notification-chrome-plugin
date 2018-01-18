@@ -1,3 +1,7 @@
+body {
+  display: none;
+}
+
 .warn {
     background-color: #343a40;
     color: #fff;
