@@ -1,3 +1,9 @@
+html {
+  width: 280px;
+  height: 250px;
+  background: #f4f4f4;
+}
+
 body {
   display: none;
 }
@@ -68,8 +74,12 @@ a:hover {
     transform: translate(-50%, -50%);
   }
   .press {
-    margin-bottom: 40px;
+    margin-bottom: 15px;
   }
   .hidden {
     display: none;
+  }
+
+  .mt15 {
+    margin-top: 15px;
   }

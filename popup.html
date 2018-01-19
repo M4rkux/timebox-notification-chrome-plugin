@@ -9,16 +9,23 @@
     </a>
 
     
-    <div class="row press">
+    <!-- <div class="row press">
         <label for="twominutes">Aviso de 2 minutos</label>
         <input type="checkbox" name="twominutes" id="twominutes" class="cbx hidden" />
         <label for="twominutes" class="lbl"></label> 
-    </div>
-    <div class="row press">
+    </div> -->
+    <div class="row press mt15">
         <label for="audioPermission">Áudio</label>
         <input type="checkbox" name="audioPermission" id="audioPermission" class="cbx hidden" />
         <label for="audioPermission" class="lbl"></label> 
     </div>
+    <div class="row press">
+        <label for="overwriteHour">Sobrescrever hora de saída</label>
+        <input type="checkbox" name="overwriteHour" id="overwriteHour" class="cbx hidden" />
+        <label for="overwriteHour" class="lbl"></label> 
+    </div>
+
+    Me notifique as: <input type="time" id="hourOverwited" name="hourOverwited" disabled />
 
     <script src="popup.js"></script>
 </body>
