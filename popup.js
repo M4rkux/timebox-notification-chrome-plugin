@@ -1,12 +1,12 @@
 let promises = [];
 
-// promises.push(chrome.storage.sync.get('twominutes', response => {
-//     if (response.twominutes) {
-//         document.getElementById('twominutes').checked = true;
-//     } else {
-//         document.getElementById('twominutes').checked = false;
-//     }
-// }));
+promises.push(chrome.storage.sync.get('twoMinutesPermission', response => {
+    if (response.twoMinutesPermission) {
+        document.getElementById('twoMinutesPermission').checked = true;
+    } else {
+        document.getElementById('twoMinutesPermission').checked = false;
+    }
+}));
 
 promises.push(chrome.storage.sync.get('audioPermission', response => {
     if (response.audioPermission) {
@@ -32,13 +32,13 @@ Promise.all(promises).then((resp) => {
 });
 
 /* FUNÇÃO PARA SALVAR O AVISO DE 2 MINUTOS */
-// document.getElementById('twominutes').addEventListener('change', saveTwoMinutes);
+document.getElementById('twoMinutesPermission').addEventListener('change', saveTwoMinutes);
 
-// function saveTwoMinutes(e) {
-//     chrome.storage.sync.set({'twominutes': e.target.checked}, function() {
-//         console.log('Two Minutes ' + (e.target.checked ? 'Ativado' : 'Desativado'));
-//     });
-// }
+function saveTwoMinutes(e) {
+    chrome.storage.sync.set({'twoMinutesPermission': e.target.checked}, function() {
+        console.log('Two Minutes ' + (e.target.checked ? 'Ativado' : 'Desativado'));
+    });
+}
 
 /* FUNÇÃO PARA SALVAR A PERMISSÃO DE ÁUDIO */
 document.getElementById('audioPermission').addEventListener('change', saveAudioPermission);
