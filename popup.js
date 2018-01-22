@@ -63,7 +63,7 @@ function toggleOverwriteHour(e) {
 }
 
 function overwriteHour(e) {
-    if (document.getElementById('overwriteHour')) {
+    if (document.getElementById('overwriteHour').value) {
         chrome.storage.sync.set({'newHour': document.getElementById('hourOverwited').value}, function() {
             console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
         });
