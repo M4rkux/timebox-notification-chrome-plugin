@@ -15,7 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
         horaSaida = new Date(horaSaida).setMinutes(document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1]);
         horaSaida = new Date(horaSaida).setSeconds(0);
         
-        chrome.storage.sync.set({'horaSaida': horaSaida});
+        chrome.storage.sync.get('horaSaida', (response) => {
+            if (!response.horaSaida) {
+                chrome.storage.sync.set({'horaSaida': horaSaida});
+            }
+        });
     }
     
     if (document.querySelector("#hdfHoraSaidaAlmoco") 
