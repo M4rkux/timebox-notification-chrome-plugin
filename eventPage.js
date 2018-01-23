@@ -1,9 +1,10 @@
 const audioDefault = 'https://freesound.org/data/previews/109/109662_945474-lq.mp3';
 const icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
 const audioTwoMinutes = 'https://soundoftext.nyc3.digitaloceanspaces.com/151285a0-ff88-11e7-b289-2f4fa9c8406d.mp3';
+const audioFiveMinutes = 'http://uponto.franco.eti.br/res/sound/five.mp3';
 
 let audioPermission = false;
-let twoMinutesPermission = false;
+let fiveMinutesPermission = false;
 let newHour = null;
 
 chrome.alarms.get('alarmReset', (response) => {
@@ -25,10 +26,10 @@ chrome.alarms.onAlarm.addListener((response) => {
             mostraNotificacao(alertObj);
             break;
 
-        case 'alarmTwoMinutes':
+        case 'alarmFiveMinutes':
             alertObj = {titulo: "Aviso!", corpo: {
-                    body: 'Faltam 2 minutos para bater o ponto.',
-                    tag: 'twominutes',
+                    body: 'Faltam 5 minutos para bater o ponto.',
+                    tag: 'fiveminutes',
                     icon: icone
                 }
             };
@@ -44,8 +45,8 @@ chrome.alarms.onAlarm.addListener((response) => {
 chrome.storage.sync.get('audioPermission', response => {
     audioPermission = response.audioPermission;
 });
-chrome.storage.sync.get('twoMinutesPermission', response => {
-    twoMinutesPermission = response.twoMinutesPermission;
+chrome.storage.sync.get('fiveMinutesPermission', response => {
+    fiveMinutesPermission = response.fiveMinutesPermission;
 });
 
 chrome.storage.sync.get('lastUpdate', response => {
@@ -77,20 +78,20 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
             case 'audioPermission':
                 audioPermission = storageChange.newValue;
                 break;
-            case 'twoMinutesPermission':
-                twoMinutesPermission = storageChange.newValue;
+            case 'fiveMinutesPermission':
+                fiveMinutesPermission = storageChange.newValue;
                 break;
         }
     }
 });
 
-function mostraNotificacao(notificacao, twoMinutesNotification) {
+function mostraNotificacao(notificacao, fiveMinutesNotification) {
     if (Notification.permission === "granted") {
         let notification = new Notification(notificacao.titulo, notificacao.corpo);
         if (audioPermission) {
             let audio;
-            if (twoMinutesNotification) {
-                audio = new Audio(audioTwoMinutes);
+            if (fiveMinutesNotification) {
+                audio = new Audio(audioFiveMinutes);
             } else {
                 audio = new Audio(audioDefault);
             }

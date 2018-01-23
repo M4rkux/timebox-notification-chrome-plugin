@@ -1,7 +1,12 @@
 let newHour = false;
+let fiveMinutesPermission = false;
 
 chrome.storage.sync.get('newHour', response => {
     newHour = response.newHour;
+});
+
+chrome.storage.sync.get('fiveMinutesPermission', response => {
+    fiveMinutesPermission = response.fiveMinutesPermission;
 });
 
 if (!newHour) {
@@ -14,9 +19,9 @@ if (!newHour) {
                 chrome.alarms.create('alarmSaida', {
                     when: horaSaida
                 });
-                if (twoMinutesPermission) {
-                    chrome.alarms.clear('alarmTwoMinutes', () => {
-                        chrome.alarms.create('alarmTwoMinutes', {
+                if (fiveMinutesPermission) {
+                    chrome.alarms.clear('alarmFiveMinutes', () => {
+                        chrome.alarms.create('alarmFiveMinutes', {
                             when : new Date(horaSaida - 2*60000).getTime()
                         });
                     });

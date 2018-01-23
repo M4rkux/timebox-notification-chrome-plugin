@@ -1,10 +1,10 @@
 let promises = [];
 
-promises.push(chrome.storage.sync.get('twoMinutesPermission', response => {
-    if (response.twoMinutesPermission) {
-        document.getElementById('twoMinutesPermission').checked = true;
+promises.push(chrome.storage.sync.get('fiveMinutesPermission', response => {
+    if (response.fiveMinutesPermission) {
+        document.getElementById('fiveMinutesPermission').checked = true;
     } else {
-        document.getElementById('twoMinutesPermission').checked = false;
+        document.getElementById('fiveMinutesPermission').checked = false;
     }
 }));
 
@@ -31,12 +31,12 @@ Promise.all(promises).then((resp) => {
     document.getElementById('body').style = 'display: block';
 });
 
-/* FUNÇÃO PARA SALVAR O AVISO DE 2 MINUTOS */
-document.getElementById('twoMinutesPermission').addEventListener('change', saveTwoMinutes);
+/* FUNÇÃO PARA SALVAR O AVISO DE 5 MINUTOS */
+document.getElementById('fiveMinutesPermission').addEventListener('change', saveFiveMinutes);
 
-function saveTwoMinutes(e) {
-    chrome.storage.sync.set({'twoMinutesPermission': e.target.checked}, () => {
-        console.log('Two Minutes ' + (e.target.checked ? 'Ativado' : 'Desativado'));
+function saveFiveMinutes(e) {
+    chrome.storage.sync.set({'fiveMinutesPermission': e.target.checked}, () => {
+        console.log('Five Minutes ' + (e.target.checked ? 'Ativado' : 'Desativado'));
     });
 }
 
@@ -76,9 +76,9 @@ function overwriteHour(e) {
                     when: newHour
                 });
             });
-            if (twoMinutesPermission) {
-                chrome.alarms.clear('alarmTwoMinutes', () => {
-                    chrome.alarms.create('alarmTwoMinutes', {
+            if (fiveMinutesPermission) {
+                chrome.alarms.clear('alarmFiveMinutes', () => {
+                    chrome.alarms.create('alarmFiveMinutes', {
                         when : new Date(newHour - 2*60000).getTime()
                     });
                 });
@@ -93,13 +93,13 @@ function removeNewHour() {
     chrome.storage.sync.remove('newHour', () => {
         console.log('Notificação da hora de saída voltou para o padrão');
         chrome.alarms.clear('alarmSaida');
-        chrome.alarms.clear('alarmTwoMinutes', () => {
+        chrome.alarms.clear('alarmFiveMinutes', () => {
             chrome.storage.sync.get('horaSaida', (response) => {
                 if (response.horaSaida) {
                     chrome.alarms.create('alarmSaida', {
                         when: horaSaida
                     });
-                    chrome.alarms.create('alarmTwoMinutes', {
+                    chrome.alarms.create('alarmFiveMinutes', {
                         when : new Date(horaSaida - 2*60000).getTime()
                     });
                 }
