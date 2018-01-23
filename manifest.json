@@ -5,6 +5,16 @@
   "description": "Essa extensão notifica o usuário quando for a hora de bater seu ponto.",
   "version": "1.6",
 
+  "icons": {
+    "128": "/assets/icone-plugin.png"
+  },
+
+  "web_accessible_resources": [
+    "/assets/audio-ponto.mp3", 
+    "/assets/five-minutes-remaining.mp3", 
+    "/assets/relogio-notification.png"
+  ],
+
   "browser_action": {
     "default_icon": "/assets/icon.png",
     "default_popup": "popup.html"

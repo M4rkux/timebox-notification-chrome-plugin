@@ -1,26 +1,20 @@
 let promises = [];
 
 promises.push(chrome.storage.sync.get('fiveMinutesPermission', response => {
-    if (response.fiveMinutesPermission) {
-        document.getElementById('fiveMinutesPermission').checked = true;
-    } else {
-        document.getElementById('fiveMinutesPermission').checked = false;
-    }
+    document.getElementById('fiveMinutesPermission').checked = !!response.fiveMinutesPermission;
 }));
 
 promises.push(chrome.storage.sync.get('audioPermission', response => {
-    if (response.audioPermission) {
-        document.getElementById('audioPermission').checked = true;
-    } else {
-        document.getElementById('audioPermission').checked = false;
-    }
+    document.getElementById('audioPermission').checked = !!response.audioPermission;
 }));
 
 promises.push(chrome.storage.sync.get('newHour', response => {
     if (response.newHour) {
+        let newHourDate = new Date(response.newHour);
+        let newHourString = (newHourDate.getHours() < 10 ? '0' : '') + newHourDate.getHours() + ':' + (newHourDate.getMinutes() < 10 ? '0' : '') + newHourDate.getMinutes();
         document.getElementById('overwriteHour').checked = true;
         document.getElementById('hourOverwited').disabled = false;
-        document.getElementById('hourOverwited').value = response.newHour;
+        document.getElementById('hourOverwited').value = newHourString;
     } else {
         document.getElementById('overwriteHour').checked = false;
         document.getElementById('hourOverwited').disabled = true;
@@ -65,24 +59,11 @@ function toggleOverwriteHour(e) {
 
 function overwriteHour(e) {
     if (document.getElementById('hourOverwited').value) {
-        chrome.storage.sync.set({'newHour': document.getElementById('hourOverwited').value}, () => {
-            console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
-            let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
+        let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
             newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
             newHour = new Date(newHour).setSeconds(0);
-
-            chrome.alarms.clear('alarmSaida', () => {
-                chrome.alarms.create('alarmSaida', {
-                    when: newHour
-                });
-            });
-            if (fiveMinutesPermission) {
-                chrome.alarms.clear('alarmFiveMinutes', () => {
-                    chrome.alarms.create('alarmFiveMinutes', {
-                        when : new Date(newHour - 2*60000).getTime()
-                    });
-                });
-            }
+        chrome.storage.sync.set({'newHour': newHour}, () => {
+            console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
         });
     } else {
         removeNewHour();

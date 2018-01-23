@@ -83,3 +83,9 @@ a:hover {
   .mt15 {
     margin-top: 15px;
   }
+
+  .rodape {
+    text-align: right;
+    padding-right: 5px;
+    display: block;
+  }

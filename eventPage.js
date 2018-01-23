@@ -1,7 +1,7 @@
-const audioDefault = 'https://freesound.org/data/previews/109/109662_945474-lq.mp3';
-const icone = 'https://cdn1.iconfinder.com/data/icons/web-essentials-circle-style/48/clock-2-512.png';
+const audioDefault = '/assets/audio-ponto.mp3';
+const icone = '/assets/relogio-notification.png';
 const audioTwoMinutes = 'https://soundoftext.nyc3.digitaloceanspaces.com/151285a0-ff88-11e7-b289-2f4fa9c8406d.mp3';
-const audioFiveMinutes = 'http://uponto.franco.eti.br/res/sound/five.mp3';
+const audioFiveMinutes = '/assets/five-minutes-remaining.mp3';
 
 let audioPermission = false;
 let fiveMinutesPermission = false;
@@ -16,6 +16,16 @@ chrome.alarms.get('alarmReset', (response) => {
 chrome.alarms.onAlarm.addListener((response) => {
     let alertObj = {};
     switch (response.name) {
+        case 'alarmAlmoco':
+            alertObj = {titulo: "Hora de bater o ponto!", corpo: { 
+                    body: 'Já pode voltar a trabalhar',
+                    tag: 'almoco',
+                    icon: icone
+                }
+            };
+            mostraNotificacao(alertObj);
+            break;
+
         case 'alarmSaida':
             alertObj = {titulo: "Hora de bater o ponto!", corpo: { 
                     body: 'Lembre-se de ir embora.',
@@ -49,6 +59,10 @@ chrome.storage.sync.get('fiveMinutesPermission', response => {
     fiveMinutesPermission = response.fiveMinutesPermission;
 });
 
+chrome.storage.sync.get('newHour', response => {
+    newHour = response.newHour;
+});
+
 chrome.storage.sync.get('lastUpdate', response => {
     lastUpdate = response.lastUpdate ? response.lastUpdate : Date.now();
 
@@ -78,8 +92,84 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
             case 'audioPermission':
                 audioPermission = storageChange.newValue;
                 break;
+
             case 'fiveMinutesPermission':
                 fiveMinutesPermission = storageChange.newValue;
+                if (fiveMinutesPermission) {
+                    chrome.alarms.get('alarmSaida', (response) => {
+                        if (!!response) {
+                            chrome.alarms.clear('alarmFiveMinutes', () => {
+                                chrome.alarms.create('alarmFiveMinutes', {
+                                    when : new Date(response.scheduledTime - 2*60000).getTime()
+                                });
+                            });
+                        }
+                    });
+                } else {
+                    chrome.alarms.clear('alarmFiveMinutes');
+                }
+                break;
+
+            case 'horaSaida':
+                if (!newHour) {
+                    let horaSaida = storageChange.newValue;
+                    chrome.alarms.clear('alarmSaida', () =>{
+                        chrome.alarms.create('alarmSaida', {
+                            when: horaSaida
+                        });
+                    });
+                    if (fiveMinutesPermission) {
+                        chrome.alarms.clear('alarmFiveMinutes', () => {
+                            chrome.alarms.create('alarmFiveMinutes', {
+                                when : new Date(horaSaida - 2*60000).getTime()
+                            });
+                        });
+                    }
+                }
+                break;
+
+            case 'newHour':
+                newHour = storageChange.newValue;
+                if (newHour) {
+                    chrome.alarms.clear('alarmSaida', () =>{
+                        chrome.alarms.create('alarmSaida', {
+                            when: newHour
+                        });
+                    });
+                    if (fiveMinutesPermission) {
+                        chrome.alarms.clear('alarmFiveMinutes', () => {
+                            chrome.alarms.create('alarmFiveMinutes', {
+                                when : new Date(newHour - 2*60000).getTime()
+                            });
+                        });
+                    }
+                } else {
+                    chrome.storage.sync.get('horaSaida', response => {
+                        horaSaida = response.horaSaida;
+                        chrome.alarms.clear('alarmSaida', () =>{
+                            chrome.alarms.create('alarmSaida', {
+                                when: horaSaida
+                            });
+                        });
+                        if (fiveMinutesPermission) {
+                            chrome.alarms.clear('alarmFiveMinutes', () => {
+                                chrome.alarms.create('alarmFiveMinutes', {
+                                    when : new Date(horaSaida - 2*60000).getTime()
+                                });
+                            });
+                        }
+                    });
+                }
+                
+                break;
+
+            case 'horaAlmoco':
+                let almoco = storageChange.newValue;
+                chrome.alarms.clear('alarmAlmoco', () => {
+                    chrome.alarms.create('alarmAlmoco', {
+                        when: almoco
+                    });
+                });
                 break;
         }
     }
