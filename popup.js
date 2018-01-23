@@ -35,7 +35,7 @@ Promise.all(promises).then((resp) => {
 document.getElementById('twoMinutesPermission').addEventListener('change', saveTwoMinutes);
 
 function saveTwoMinutes(e) {
-    chrome.storage.sync.set({'twoMinutesPermission': e.target.checked}, function() {
+    chrome.storage.sync.set({'twoMinutesPermission': e.target.checked}, () => {
         console.log('Two Minutes ' + (e.target.checked ? 'Ativado' : 'Desativado'));
     });
 }
@@ -44,7 +44,7 @@ function saveTwoMinutes(e) {
 document.getElementById('audioPermission').addEventListener('change', saveAudioPermission);
 
 function saveAudioPermission(e) {
-    chrome.storage.sync.set({'audioPermission': e.target.checked}, function() {
+    chrome.storage.sync.set({'audioPermission': e.target.checked}, () => {
         console.log('Áudio ' + (e.target.checked ? 'Ativado' : 'Desativado'));
     });
 }
@@ -59,18 +59,51 @@ function toggleOverwriteHour(e) {
     } else {
         document.getElementById('hourOverwited').disabled = true;
         document.getElementById('hourOverwited').value = null;
+        removeNewHour();
     }
 }
 
 function overwriteHour(e) {
-    if (document.getElementById('overwriteHour').value) {
-        chrome.storage.sync.set({'newHour': document.getElementById('hourOverwited').value}, function() {
+    if (document.getElementById('hourOverwited').value) {
+        chrome.storage.sync.set({'newHour': document.getElementById('hourOverwited').value}, () => {
             console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
+            let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
+            newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
+            newHour = new Date(newHour).setSeconds(0);
+
+            chrome.alarms.clear('alarmSaida', () => {
+                chrome.alarms.create('alarmSaida', {
+                    when: newHour
+                });
+            });
+            if (twoMinutesPermission) {
+                chrome.alarms.clear('alarmTwoMinutes', () => {
+                    chrome.alarms.create('alarmTwoMinutes', {
+                        when : new Date(newHour - 2*60000).getTime()
+                    });
+                });
+            }
         });
     } else {
-        chrome.storage.sync.set({'newHour': null}, function() {
-            console.log('Notificação da hora de saída voltou para o padrão');
-        });
+        removeNewHour();
     }
-    
+}
+
+function removeNewHour() {
+    chrome.storage.sync.remove('newHour', () => {
+        console.log('Notificação da hora de saída voltou para o padrão');
+        chrome.alarms.clear('alarmSaida');
+        chrome.alarms.clear('alarmTwoMinutes', () => {
+            chrome.storage.sync.get('horaSaida', (response) => {
+                if (response.horaSaida) {
+                    chrome.alarms.create('alarmSaida', {
+                        when: horaSaida
+                    });
+                    chrome.alarms.create('alarmTwoMinutes', {
+                        when : new Date(horaSaida - 2*60000).getTime()
+                    });
+                }
+            });
+        });
+    });
 }
