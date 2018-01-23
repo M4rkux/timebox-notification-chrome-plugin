@@ -81,7 +81,7 @@ function removeNewHour() {
                         when: horaSaida
                     });
                     chrome.alarms.create('alarmFiveMinutes', {
-                        when : new Date(horaSaida - 2*60000).getTime()
+                        when : new Date(horaSaida - 5*60000).getTime()
                     });
                 }
             });

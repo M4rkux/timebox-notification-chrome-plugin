@@ -63,28 +63,6 @@ chrome.storage.sync.get('newHour', response => {
     newHour = response.newHour;
 });
 
-chrome.storage.sync.get('lastUpdate', response => {
-    lastUpdate = response.lastUpdate ? response.lastUpdate : Date.now();
-
-    let now = new Date();
-    let start = new Date(now.getFullYear(), 0, 0);
-    let oneDay = 1000 * 60 * 60 * 24;
-
-    let lastUpdateDate = new Date(lastUpdate);
-    let diffLastUpdate = lastUpdateDate - start;
-    
-    let dayLastUpdate = Math.floor(diffLastUpdate / oneDay);
-    
-    let diffNow = now - start;
-    let dayToday = Math.floor(diffNow / oneDay);
-
-    if (dayLastUpdate !== dayToday) {
-        chrome.storage.sync.set({'newHour': null});
-    }
-
-    chrome.storage.sync.set({'lastUpdate': Date.now()});
-});
-
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     for (let key in changes) {
         let storageChange = changes[key];
@@ -121,7 +99,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                     if (fiveMinutesPermission) {
                         chrome.alarms.clear('alarmFiveMinutes', () => {
                             chrome.alarms.create('alarmFiveMinutes', {
-                                when : new Date(horaSaida - 2*60000).getTime()
+                                when : new Date(horaSaida - 5*60000).getTime()
                             });
                         });
                     }
@@ -139,7 +117,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                     if (fiveMinutesPermission) {
                         chrome.alarms.clear('alarmFiveMinutes', () => {
                             chrome.alarms.create('alarmFiveMinutes', {
-                                when : new Date(newHour - 2*60000).getTime()
+                                when : new Date(newHour - 5*60000).getTime()
                             });
                         });
                     }
@@ -154,7 +132,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                         if (fiveMinutesPermission) {
                             chrome.alarms.clear('alarmFiveMinutes', () => {
                                 chrome.alarms.create('alarmFiveMinutes', {
-                                    when : new Date(horaSaida - 2*60000).getTime()
+                                    when : new Date(horaSaida - 5*60000).getTime()
                                 });
                             });
                         }
