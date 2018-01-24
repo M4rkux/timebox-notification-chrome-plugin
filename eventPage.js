@@ -1,7 +1,7 @@
 const audioDefault = '/assets/audio-ponto.mp3';
-const icone = '/assets/relogio-notification.png';
-const audioTwoMinutes = 'https://soundoftext.nyc3.digitaloceanspaces.com/151285a0-ff88-11e7-b289-2f4fa9c8406d.mp3';
 const audioFiveMinutes = '/assets/five-minutes-remaining.mp3';
+const icone = '/assets/relogio-notification.png';
+const CINCO_MINUTOS = 5*60000;
 
 let audioPermission = false;
 let fiveMinutesPermission = false;
@@ -63,7 +63,8 @@ chrome.storage.sync.get('newHour', response => {
     newHour = response.newHour;
 });
 
-chrome.storage.onChanged.addListener(function(changes, namespace) {
+chrome.storage.onChanged.addListener(function(changes) {
+    let horaAtual = new Date().getTime();
     for (let key in changes) {
         let storageChange = changes[key];
         switch (key) {
@@ -73,19 +74,15 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
             case 'fiveMinutesPermission':
                 fiveMinutesPermission = storageChange.newValue;
-                if (fiveMinutesPermission) {
-                    chrome.alarms.get('alarmSaida', (response) => {
-                        if (!!response) {
-                            chrome.alarms.clear('alarmFiveMinutes', () => {
-                                chrome.alarms.create('alarmFiveMinutes', {
-                                    when : new Date(response.scheduledTime - 2*60000).getTime()
-                                });
-                            });
-                        }
-                    });
-                } else {
-                    chrome.alarms.clear('alarmFiveMinutes');
-                }
+                chrome.alarms.get('alarmSaida', (response) => {
+                    if (!!fiveMinutesPermission && !!response && horaAtual <= (response.scheduledTime - CINCO_MINUTOS)) {
+                        makeFiveMinutesAlert(response.scheduledTime);
+                    } else {
+                        chrome.alarms.clear('alarmFiveMinutes', () => {
+                            chrome.storage.sync.set({'checkAlarms' : true});
+                        });
+                    }
+                });
                 break;
 
             case 'horaSaida':
@@ -95,13 +92,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                         chrome.alarms.create('alarmSaida', {
                             when: horaSaida
                         });
+                        chrome.storage.sync.set({'checkAlarms' : true});
                     });
-                    if (fiveMinutesPermission) {
-                        chrome.alarms.clear('alarmFiveMinutes', () => {
-                            chrome.alarms.create('alarmFiveMinutes', {
-                                when : new Date(horaSaida - 5*60000).getTime()
-                            });
-                        });
+                    if (fiveMinutesPermission && horaAtual <= (horaSaida - CINCO_MINUTOS)) {
+                        makeFiveMinutesAlert(horaSaida);
                     }
                 }
                 break;
@@ -113,13 +107,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                         chrome.alarms.create('alarmSaida', {
                             when: newHour
                         });
+                        chrome.storage.sync.set({'checkAlarms' : true});
                     });
                     if (fiveMinutesPermission) {
-                        chrome.alarms.clear('alarmFiveMinutes', () => {
-                            chrome.alarms.create('alarmFiveMinutes', {
-                                when : new Date(newHour - 5*60000).getTime()
-                            });
-                        });
+                        makeFiveMinutesAlert(newHour);
                     }
                 } else {
                     chrome.storage.sync.get('horaSaida', response => {
@@ -128,13 +119,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                             chrome.alarms.create('alarmSaida', {
                                 when: horaSaida
                             });
+                            chrome.storage.sync.set({'checkAlarms' : true});
                         });
                         if (fiveMinutesPermission) {
-                            chrome.alarms.clear('alarmFiveMinutes', () => {
-                                chrome.alarms.create('alarmFiveMinutes', {
-                                    when : new Date(horaSaida - 5*60000).getTime()
-                                });
-                            });
+                            makeFiveMinutesAlert(horaSaida);
                         }
                     });
                 }
@@ -147,15 +135,29 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                     chrome.alarms.create('alarmAlmoco', {
                         when: almoco
                     });
+                    chrome.storage.sync.set({'checkAlarms' : true});
                 });
                 break;
         }
     }
 });
 
+function makeFiveMinutesAlert (horaSaida) {
+    chrome.alarms.clear('alarmFiveMinutes', () => {
+        chrome.alarms.create('alarmFiveMinutes', {
+            when : new Date(horaSaida - CINCO_MINUTOS).getTime()
+        });
+        chrome.storage.sync.set({'checkAlarms' : true});
+    });
+}
+
 function mostraNotificacao(notificacao, fiveMinutesNotification) {
     if (Notification.permission === "granted") {
         let notification = new Notification(notificacao.titulo, notificacao.corpo);
+        notification.onclick = function () {
+            window.open('https://webservices.cinq.com.br/pessoas/timebox');
+        }; 
+
         if (audioPermission) {
             let audio;
             if (fiveMinutesNotification) {

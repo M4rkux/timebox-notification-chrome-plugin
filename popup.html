@@ -8,6 +8,10 @@
         https://webservices.cinq.com.br/pessoas/timebox
     </a>
 
+    <div class="row press">
+        <span>Próxima notificação: </span>
+        <b id="nextNotification"></b>
+    </div>
     
     <div class="row press mt15">
         <label for="fiveMinutesPermission">Aviso de 5 minutos</label>
@@ -20,14 +24,14 @@
         <label for="audioPermission" class="lbl"></label> 
     </div>
     <div class="row press">
-        <label for="overwriteHour">Sobrescrever hora de saída</label>
+        <label for="overwriteHour">Sobrescrever notificação de saída</label>
         <input type="checkbox" name="overwriteHour" id="overwriteHour" class="cbx hidden" />
         <label for="overwriteHour" class="lbl"></label> 
     </div>
 
     Me notifique as: <input type="time" id="hourOverwited" name="hourOverwited" disabled />
 
-    <small class="rodape">v1.6.2</small>
+    <small class="rodape" id="rodape"></small>
 
     <script src="popup.js"></script>
 </body>

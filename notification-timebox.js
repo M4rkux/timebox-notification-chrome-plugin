@@ -1,16 +1,8 @@
-let newHour = false;
-let fiveMinutesPermission = false;
-
-chrome.storage.sync.get('newHour', response => {
-    newHour = response.newHour;
-});
-
-chrome.storage.sync.get('fiveMinutesPermission', response => {
-    fiveMinutesPermission = response.fiveMinutesPermission;
-});
-
 document.addEventListener("DOMContentLoaded", () => {
-    if (document.querySelector("#HoraPrevistaSaida") && document.querySelector("#HoraPrevistaSaida").value && document.querySelector("#HoraPrevistaSaida").value.indexOf(':') > -1) {
+    if (document.querySelector("#HoraPrevistaSaida") && 
+        document.querySelector("#HoraPrevistaSaida").value && 
+        document.querySelector("#HoraPrevistaSaida").value.indexOf(':') > -1) {
+
         let horaSaida = new Date().setHours(document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[0]);
         horaSaida = new Date(horaSaida).setMinutes(document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1]);
         horaSaida = new Date(horaSaida).setSeconds(0);

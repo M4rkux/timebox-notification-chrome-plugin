@@ -1,5 +1,10 @@
 let promises = [];
 
+let manifest = chrome.runtime.getManifest();
+document.getElementById('rodape').innerHTML = 'v'+manifest.version;
+
+checkNextAlarm();
+
 promises.push(chrome.storage.sync.get('fiveMinutesPermission', response => {
     document.getElementById('fiveMinutesPermission').checked = !!response.fiveMinutesPermission;
 }));
@@ -60,8 +65,8 @@ function toggleOverwriteHour(e) {
 function overwriteHour(e) {
     if (document.getElementById('hourOverwited').value) {
         let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
-            newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
-            newHour = new Date(newHour).setSeconds(0);
+        newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
+        newHour = new Date(newHour).setSeconds(0);
         chrome.storage.sync.set({'newHour': newHour}, () => {
             console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
         });
@@ -73,18 +78,40 @@ function overwriteHour(e) {
 function removeNewHour() {
     chrome.storage.sync.remove('newHour', () => {
         console.log('Notificação da hora de saída voltou para o padrão');
-        chrome.alarms.clear('alarmSaida');
-        chrome.alarms.clear('alarmFiveMinutes', () => {
-            chrome.storage.sync.get('horaSaida', (response) => {
-                if (response.horaSaida) {
-                    chrome.alarms.create('alarmSaida', {
-                        when: horaSaida
-                    });
-                    chrome.alarms.create('alarmFiveMinutes', {
-                        when : new Date(horaSaida - 5*60000).getTime()
-                    });
-                }
-            });
-        });
     });
 }
+
+function checkNextAlarm() {
+    let nextAlarm = null;
+    let nextNotificationString = '-';
+
+    chrome.alarms.getAll((alarms) => {
+        alarms.forEach(alarm => {
+            if (alarm.name !== 'alarmReset') {
+                if (!nextAlarm || nextAlarm.scheduledTime > alarm.scheduledTime) {
+                    nextAlarm = alarm;
+                }
+            }
+        });
+        if (!!nextAlarm) {
+            let nextAlarmDate = new Date(nextAlarm.scheduledTime);
+            nextNotificationString = (nextAlarmDate.getHours() < 10 ? '0' : '') + nextAlarmDate.getHours() + ':' + (nextAlarmDate.getMinutes() < 10 ? '0' : '') + nextAlarmDate.getMinutes();
+        }
+        document.getElementById('nextNotification').innerHTML = nextNotificationString;
+
+        chrome.storage.sync.remove('checkAlarms');
+    });
+}
+
+chrome.storage.onChanged.addListener(function(changes) {
+    for (let key in changes) {
+        let storageChange = changes[key];
+        switch (key) {
+            case 'checkAlarms':
+                if (!!storageChange.newValue) {
+                    checkNextAlarm();
+                }
+                break;
+        }
+    }
+});
