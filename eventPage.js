@@ -115,14 +115,16 @@ chrome.storage.onChanged.addListener(function(changes) {
                 } else {
                     chrome.storage.sync.get('horaSaida', response => {
                         horaSaida = response.horaSaida;
-                        chrome.alarms.clear('alarmSaida', () =>{
-                            chrome.alarms.create('alarmSaida', {
-                                when: horaSaida
+                        if (horaSaida) {
+                            chrome.alarms.clear('alarmSaida', () =>{
+                                chrome.alarms.create('alarmSaida', {
+                                    when: horaSaida
+                                });
+                                chrome.storage.sync.set({'checkAlarms' : true});
                             });
-                            chrome.storage.sync.set({'checkAlarms' : true});
-                        });
-                        if (fiveMinutesPermission) {
-                            makeFiveMinutesAlert(horaSaida);
+                            if (fiveMinutesPermission) {
+                                makeFiveMinutesAlert(horaSaida);
+                            }
                         }
                     });
                 }
@@ -176,6 +178,7 @@ function reset () {
         let dateToClear = new Date().setHours(23);
         dateToClear = new Date(dateToClear).setMinutes(59);
         dateToClear = new Date(dateToClear).setSeconds(59);
+        dateToClear = new Date(dateToClear).setMilliseconds(999);
         chrome.alarms.create('alarmReset', {
             when: dateToClear
         });

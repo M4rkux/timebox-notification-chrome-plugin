@@ -6,9 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let horaSaida = new Date().setHours(document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[0]);
         horaSaida = new Date(horaSaida).setMinutes(document.querySelector("#HoraPrevistaSaida").value.split(' ')[1].split(':')[1]);
         horaSaida = new Date(horaSaida).setSeconds(0);
+        horaSaida = new Date(horaSaida).setMilliseconds(0);
         
         chrome.storage.sync.get('horaSaida', (response) => {
-            if (!response.horaSaida) {
+            if (!response.horaSaida || horaSaida !== response.horaSaida) {
                 chrome.storage.sync.set({'horaSaida': horaSaida});
             }
         });
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let almoco = new Date().setHours(almocoHora);
         almoco = new Date(almoco).setMinutes(document.querySelector("#hdfHoraSaidaAlmoco").value.split(':')[1]);
         almoco = new Date(almoco).setSeconds(0);
+        almoco = new Date(almoco).setMilliseconds(0);
         
         chrome.storage.sync.set({'horaAlmoco': almoco});
     }
