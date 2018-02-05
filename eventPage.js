@@ -178,7 +178,6 @@ function reset () {
         let dateToClear = new Date().setHours(23);
         dateToClear = new Date(dateToClear).setMinutes(59);
         dateToClear = new Date(dateToClear).setSeconds(59);
-        dateToClear = new Date(dateToClear).setMilliseconds(999);
         chrome.alarms.create('alarmReset', {
             when: dateToClear
         });
