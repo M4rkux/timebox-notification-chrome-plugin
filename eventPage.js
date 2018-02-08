@@ -6,6 +6,7 @@ const CINCO_MINUTOS = 5*60000;
 let audioPermission = false;
 let fiveMinutesPermission = false;
 let newHour = null;
+let manifest = chrome.runtime.getManifest();
 
 chrome.alarms.get('alarmReset', (response) => {
     if (!response) {
@@ -17,7 +18,7 @@ chrome.alarms.onAlarm.addListener((response) => {
     let alertObj = {};
     switch (response.name) {
         case 'alarmAlmoco':
-            alertObj = {titulo: "Hora de bater o ponto!", corpo: { 
+            alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
                     body: 'Já pode voltar a trabalhar',
                     tag: 'almoco',
                     icon: icone
@@ -27,7 +28,7 @@ chrome.alarms.onAlarm.addListener((response) => {
             break;
 
         case 'alarmSaida':
-            alertObj = {titulo: "Hora de bater o ponto!", corpo: { 
+            alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
                     body: 'Lembre-se de ir embora.',
                     tag: 'saida',
                     icon: icone
@@ -37,7 +38,7 @@ chrome.alarms.onAlarm.addListener((response) => {
             break;
 
         case 'alarmFiveMinutes':
-            alertObj = {titulo: "Aviso!", corpo: {
+            alertObj = {titulo: "Aviso!" + (manifest.dev ? " [Dev]" : ""), corpo: {
                     body: 'Faltam 5 minutos para bater o ponto.',
                     tag: 'fiveminutes',
                     icon: icone
@@ -178,6 +179,7 @@ function reset () {
         let dateToClear = new Date().setHours(23);
         dateToClear = new Date(dateToClear).setMinutes(59);
         dateToClear = new Date(dateToClear).setSeconds(59);
+        dateToClear = new Date(dateToClear).setMilliseconds(999);
         chrome.alarms.create('alarmReset', {
             when: dateToClear
         });

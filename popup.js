@@ -67,6 +67,7 @@ function overwriteHour(e) {
         let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
         newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
         newHour = new Date(newHour).setSeconds(0);
+        newHour = new Date(newHour).setMilliseconds(0);
         chrome.storage.sync.set({'newHour': newHour}, () => {
             console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
         });
