@@ -20,7 +20,7 @@ chrome.alarms.onAlarm.addListener((response) => {
         case 'alarmAlmoco':
             alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
                     body: 'Já pode voltar a trabalhar',
-                    tag: 'almoco',
+                    tag: 'almoco' + (manifest.dev ? "-dev" : ""),
                     icon: icone
                 }
             };
@@ -30,7 +30,7 @@ chrome.alarms.onAlarm.addListener((response) => {
         case 'alarmSaida':
             alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
                     body: 'Lembre-se de ir embora.',
-                    tag: 'saida',
+                    tag: 'saida' + (manifest.dev ? "-dev" : ""),
                     icon: icone
                 }
             };
@@ -40,7 +40,7 @@ chrome.alarms.onAlarm.addListener((response) => {
         case 'alarmFiveMinutes':
             alertObj = {titulo: "Aviso!" + (manifest.dev ? " [Dev]" : ""), corpo: {
                     body: 'Faltam 5 minutos para bater o ponto.',
-                    tag: 'fiveminutes',
+                    tag: 'fiveminutes' + (manifest.dev ? "-dev" : ""),
                     icon: icone
                 }
             };
