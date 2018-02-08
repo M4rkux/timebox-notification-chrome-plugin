@@ -6,7 +6,8 @@ const CINCO_MINUTOS = 5*60000;
 let audioPermission = false;
 let fiveMinutesPermission = false;
 let newHour = null;
-let manifest = chrome.runtime.getManifest();
+const manifest = chrome.runtime.getManifest();
+const devMode = manifest.name.indexOf('[Dev]') > -1;
 
 chrome.alarms.get('alarmReset', (response) => {
     if (!response) {
@@ -18,9 +19,9 @@ chrome.alarms.onAlarm.addListener((response) => {
     let alertObj = {};
     switch (response.name) {
         case 'alarmAlmoco':
-            alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
+            alertObj = {titulo: "Hora de bater o ponto!" + (devMode ? " [Dev]" : ""), corpo: { 
                     body: 'Já pode voltar a trabalhar',
-                    tag: 'almoco' + (manifest.dev ? "-dev" : ""),
+                    tag: 'almoco' + (devMode ? "-dev" : ""),
                     icon: icone
                 }
             };
@@ -28,9 +29,9 @@ chrome.alarms.onAlarm.addListener((response) => {
             break;
 
         case 'alarmSaida':
-            alertObj = {titulo: "Hora de bater o ponto!" + (manifest.dev ? " [Dev]" : ""), corpo: { 
+            alertObj = {titulo: "Hora de bater o ponto!" + (devMode ? " [Dev]" : ""), corpo: { 
                     body: 'Lembre-se de ir embora.',
-                    tag: 'saida' + (manifest.dev ? "-dev" : ""),
+                    tag: 'saida' + (devMode ? "-dev" : ""),
                     icon: icone
                 }
             };
@@ -38,9 +39,9 @@ chrome.alarms.onAlarm.addListener((response) => {
             break;
 
         case 'alarmFiveMinutes':
-            alertObj = {titulo: "Aviso!" + (manifest.dev ? " [Dev]" : ""), corpo: {
+            alertObj = {titulo: "Aviso!" + (devMode ? " [Dev]" : ""), corpo: {
                     body: 'Faltam 5 minutos para bater o ponto.',
-                    tag: 'fiveminutes' + (manifest.dev ? "-dev" : ""),
+                    tag: 'fiveminutes' + (devMode ? "-dev" : ""),
                     icon: icone
                 }
             };

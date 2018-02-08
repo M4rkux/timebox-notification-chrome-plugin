@@ -1,10 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "Timebox Notification",
+  "name": "Timebox Notification [Dev]",
   "description": "Essa extensão notifica o usuário quando for a hora de bater seu ponto.",
   "version": "1.7.3",
-  "dev": true,
 
   "icons": {
     "128": "/assets/icone-plugin.png"
@@ -35,7 +34,7 @@
 
   "background": {
     "scripts": ["eventPage.js"],
-    "persistent": false
+    "persistent": true
   },
 
   "permissions": [

@@ -1,7 +1,8 @@
 let promises = [];
 
-let manifest = chrome.runtime.getManifest();
-document.getElementById('rodape').innerHTML = 'v'+manifest.version;
+const manifest = chrome.runtime.getManifest();
+const devMode = manifest.name.indexOf('[Dev]') > -1;
+document.getElementById('rodape').innerHTML = (devMode ? '[Dev] ' : '') + 'v'+manifest.version;
 
 checkNextAlarm();
 
