@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "Timebox Notification [Dev]",
+  "name": "Timebox Notification",
   "description": "Essa extensão notifica o usuário quando for a hora de bater seu ponto.",
   "version": "1.7.3",
 
