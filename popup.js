@@ -2,6 +2,7 @@ let promises = [];
 
 const manifest = chrome.runtime.getManifest();
 const devMode = manifest.name.indexOf('[Dev]') > -1;
+const UM_MINUTO = 1*60000;
 document.getElementById('rodape').innerHTML = (devMode ? '[Dev] ' : '') + 'v'+manifest.version;
 
 checkNextAlarm();
@@ -67,8 +68,9 @@ function overwriteHour(e) {
     if (document.getElementById('hourOverwited').value) {
         let newHour = new Date().setHours(document.getElementById('hourOverwited').value.split(':')[0]);
         newHour = new Date(newHour).setMinutes(document.getElementById('hourOverwited').value.split(':')[1]);
-        newHour = new Date(newHour).setSeconds(1);
+        newHour = new Date(newHour).setSeconds(0);
         newHour = new Date(newHour).setMilliseconds(0);
+        newHour = new Date(newHour - UM_MINUTO).getTime();
         chrome.storage.sync.set({'newHour': newHour}, () => {
             console.log('Notificação da hora de saída sobrescrita para ' + document.getElementById('hourOverwited').value);
         });
@@ -96,7 +98,7 @@ function checkNextAlarm() {
             }
         });
         if (!!nextAlarm) {
-            let nextAlarmDate = new Date(nextAlarm.scheduledTime);
+            let nextAlarmDate = new Date(nextAlarm.scheduledTime + UM_MINUTO);
             nextNotificationString = (nextAlarmDate.getHours() < 10 ? '0' : '') + nextAlarmDate.getHours() + ':' + (nextAlarmDate.getMinutes() < 10 ? '0' : '') + nextAlarmDate.getMinutes();
         }
         document.getElementById('nextNotification').innerHTML = nextNotificationString;

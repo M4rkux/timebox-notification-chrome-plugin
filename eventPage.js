@@ -2,6 +2,7 @@ const audioDefault = '/assets/audio-ponto.mp3';
 const audioFiveMinutes = '/assets/five-minutes-remaining.mp3';
 const icone = '/assets/relogio-notification.png';
 const CINCO_MINUTOS = 5*60000;
+const UM_MINUTO = 1*60000;
 
 let audioPermission = false;
 let fiveMinutesPermission = false;
@@ -148,8 +149,10 @@ chrome.storage.onChanged.addListener(function(changes) {
 
 function makeFiveMinutesAlert (horaSaida) {
     chrome.alarms.clear('alarmFiveMinutes', () => {
+        let newDate = new Date(horaSaida - CINCO_MINUTOS).getTime()
+        newDate = new Date(newDate - UM_MINUTO).getTime()
         chrome.alarms.create('alarmFiveMinutes', {
-            when : new Date(horaSaida - CINCO_MINUTOS).getTime()
+            when : newDate
         });
         chrome.storage.sync.set({'checkAlarms' : true});
     });
