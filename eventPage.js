@@ -150,7 +150,6 @@ chrome.storage.onChanged.addListener(function(changes) {
 function makeFiveMinutesAlert (horaSaida) {
     chrome.alarms.clear('alarmFiveMinutes', () => {
         let newDate = new Date(horaSaida - CINCO_MINUTOS).getTime()
-        newDate = new Date(newDate - UM_MINUTO).getTime()
         chrome.alarms.create('alarmFiveMinutes', {
             when : newDate
         });
